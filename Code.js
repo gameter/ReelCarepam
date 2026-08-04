@@ -1,4 +1,4 @@
-// 새로운 CustomerDB 컬럼 순서 매핑 (1번부터 34번까지)
+// 새로운 CustomerDB 컬럼 순서 매핑 (1번부터 34번까지) vs 코드로 이사옴..
 const COL = {
   DATE: 1,             // 위탁 접수일
   NAME: 2,             // 고객 이름
