@@ -59,7 +59,7 @@ function normalizePhone(phone) {
   return p;
 }
 
-// 새로운 시트 이름 적용 ('베이트시세표', '스피닝시세표')
+// 새로운 시트 이름 적용 ('베이트시세표', '스피닝시세표') 새로운 환경 적응 힘들다... 
 function getSheetName(type) { 
   return (type === 'Spin') ? '스피닝시세표' : '베이트시세표'; 
 }
@@ -77,7 +77,7 @@ function getManufacturers(type) {
 function getModelsAndDetails(type, manu) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(getSheetName(type));
   if (!sheet) return { list: [], map: {} };
-  
+   
   // 시트 구조: A:제조사, B:모델명, C:연식, D:바디컨셉/옵션, E:정가, F:중고최소가, G:중고최대가, H:간단소개
   var data = sheet.getRange("A2:H" + sheet.getLastRow()).getValues();
   var modelList = [], modelMap = {};
