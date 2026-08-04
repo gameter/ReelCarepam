@@ -975,10 +975,12 @@
             }
 
             if (status === "송금대기" && r.settlementAccount && r.settlementAccount.trim() !== "") {
+              let customerNameForAccount = (r.name && r.name.trim() !== "") ? r.name : '-';
               dynamicCardsHtml += `
                 <div class="timeline-card" style="background:#fffde7; border-color:#ffe082; margin-bottom: 20px;">
                   <div class="timeline-title" style="color:#f57f17;">💰 정산 계좌 정보</div>
                   <div style="font-size:22px; color:#333; line-height: 1.6;">
+                    • <strong>예금주:</strong> <strong>${customerNameForAccount}</strong><br>
                     • <strong>등록 계좌:</strong> <strong>${r.settlementAccount}</strong><br>
                     <span style="font-size:18px; color:#555;">(제출하신 계좌로 곧 최종 정산금이 입금될 예정입니다.)</span>
                   </div>
