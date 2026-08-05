@@ -210,8 +210,15 @@ function saveCustomer(data) {
     "릴케어 인증 판매", "판매중", "판매정지", "계좌정보제공", 
     "송금대기", "거래완료", "진행보류"
   ];
-  var rule = SpreadsheetApp.newDataValidation().explicitValueInList(statuses).build();
-  statusCell.setDataValidation(rule);
+
+  try {
+    var rule = SpreadsheetApp.newDataValidation().requireValueInList(statuses, true).build();
+    statusCell.setDataValidation(rule);
+  } catch (ruleErr) {
+    // 드롭다운 설정이 실패해도 위탁 신청 자체는 정상 처리되도록 무시
+  }
+
+  //statusCell.setDataValidation(rule);
 
   return "OK";
 }
