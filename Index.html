@@ -130,6 +130,25 @@
       .timeline-card { background: #f9f9f9; border: 1px solid #ddd; border-radius: 10px; padding: 20px; margin-top: 15px; text-align: left; }
       .timeline-title { font-size: 26px; font-weight: bold; color: #2e7d32; margin-bottom: 10px; }
 
+      .status-card {
+      background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+      border: 1px solid #a5d6a7;
+      border-radius: 14px;
+      padding: 22px 20px;
+      margin-bottom: 20px;
+      text-align: left;
+      box-shadow: 0 3px 10px rgba(46,125,50,0.08);}
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #2e7d32; color: #fff; font-weight: bold;
+      padding: 10px 18px; border-radius: 30px; font-size: 24px; white-space: nowrap;}
+    .status-progress-bar { height: 8px; background: #c8e6c9; border-radius: 4px; overflow: hidden; margin: 16px 0 6px 0; }
+    .status-progress-fill { height: 100%; background: #2e7d32; border-radius: 4px; transition: width .3s; }
+    .status-progress-label { font-size: 18px; color: #558b2f; text-align: right; }
+    .status-comment { font-size: 22px; color: #333; line-height: 1.6; background: #fff; border-radius: 10px; padding: 14px 16px; margin-top: 8px; }
+
+
+
       .gauge-bar-container {
         position: relative;
         height: 30px;
@@ -176,6 +195,9 @@
         .model-desc-box { font-size: 15px; }
         #check-result { font-size: 17px; }
         .memo-box { font-size: 14px; }
+        .status-badge { font-size: 15px; padding: 6px 14px; }
+        .status-progress-label { font-size: 12px; }
+        .status-comment { font-size: 14px; }
         .timeline-title { font-size: 16px; }
         .sub-link-box { font-size: 15px; }
         .footer-section div:nth-child(1) { font-size: 16px !important; }
@@ -446,6 +468,14 @@
     <script>
       let curManu = "", curModel = "", curYear = "", curConcept = "";
       let currentModelMap = {};
+
+      const STATUS_FLOW = ["픽업/입고대기","입고/검수대기","전략협의","베이직 판매","릴케어 인증 판매","판매중","계좌정보제공","송금대기","거래완료"];
+      const STATUS_ICON = {
+        "픽업/입고대기":"🚚", "입고/검수대기":"🔍", "전략협의":"🤝",
+        "베이직 판매":"🏷️", "릴케어 인증 판매":"✨", "판매중":"🛒",
+        "판매정지":"⏸️", "계좌정보제공":"💳", "송금대기":"⏳",
+        "거래완료":"🎉", "진행보류":"⏸️"
+      };
 
       window.onload = function() { 
         setReelType('Bait', true); 
@@ -1057,10 +1087,19 @@
           res.forEach(r => {
             let status = String(r.status || "").trim();
             
+            let statusIcon = STATUS_ICON[status] || "📍";
+            let flowIdx = STATUS_FLOW.indexOf(status);
+            let progressPct = flowIdx >= 0 ? Math.round(((flowIdx + 1) / STATUS_FLOW.length) * 100) : 0;
+            let progressHtml = flowIdx >= 0 ? `
+              <div class="status-progress-bar"><div class="status-progress-fill" style="width:${progressPct}%;"></div></div>
+              <div class="status-progress-label">진행 단계 ${flowIdx + 1} / ${STATUS_FLOW.length}</div>
+            ` : "";
+
             let commentHtml = `
-              <div class="memo-box">
-                <div style="font-size:26px; color:#1b5e20; margin-bottom:5px;">📍 [ 현재 상태 : ${status} ]</div>
-                <div style="font-size:22px; font-weight:normal; color:#333;">${r.comment}</div>
+              <div class="status-card">
+                <span class="status-badge">${statusIcon} ${status}</span>
+                ${progressHtml}
+                <div class="status-comment">${r.comment}</div>
               </div>`;
 
             let dynamicCardsHtml = "";
