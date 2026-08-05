@@ -43,9 +43,11 @@
       .btn-sub:hover:not(:disabled) { background-color: #333; }
       
       .sub-link-box {
-        background-color: #fafafa; border: 1px solid #e9ecef; padding: 12px; margin-top: 15px; font-size: 28px; text-align: center; border-radius: 8px;
+        padding: 8px; margin-top: 10px; font-size: 24px; text-align: center;
       }
-      .sub-link-box a { color: #0066ff; font-weight: bold; text-decoration: underline; cursor: pointer; margin-left: 6px; }
+      .sub-link-box span { color: #888; }
+      .sub-link-box a { color: #0066ff; font-weight: normal; text-decoration: underline; cursor: pointer; margin-left: 6px; }
+      
       
       .page { display: none; } 
       #view-home { display: block; }
@@ -98,10 +100,17 @@
       .settlement-sub { font-size: 20px; color: #777; margin-top: 6px; }
 
       .promo-box {
-        background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e9 100%); border: 1px solid #a5d6a7; border-radius: 8px; padding: 18px; margin: 20px 0; text-align: left;
+        background: #ffffff; border: 1px solid #e0e0e0; border-radius: 16px; padding: 30px 24px; margin: 25px 0; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
       }
-      .promo-box h4 { margin: 0 0 10px 0; color: #1b5e20; font-size: 28px; }
-      .promo-box ul { margin: 0; padding-left: 20px; font-size: 24px; color: #333; line-height: 1.7; }
+      .promo-box h4 { margin: 0 0 22px 0; color: #1b5e20; font-size: 32px; text-align: center; }
+      .promo-grid { display: flex; flex-direction: column; gap: 18px; }
+      .promo-item { display: flex; align-items: flex-start; gap: 18px; background: #f8faf8; border-radius: 12px; padding: 18px; }
+      .promo-icon {
+        flex-shrink: 0; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #66bb6a, #2e7d32);
+        display: flex; align-items: center; justify-content: center; font-size: 28px;
+      }
+      .promo-text-title { font-size: 26px; font-weight: bold; color: #1b5e20; margin-bottom: 4px; }
+      .promo-text-desc { font-size: 22px; color: #555; line-height: 1.5; }
 
       .model-desc-box {
         display: none; background-color: #f1f8e9; border: 1px solid #c5e1a5; border-radius: 8px;
@@ -152,8 +161,10 @@
         .settlement-value { font-size: 22px !important; }
         .settlement-sub { font-size: 13px; }
         .settlement-box > div:nth-child(3) { font-size: 15px !important; }
-        .promo-box h4 { font-size: 17px; }
-        .promo-box ul { font-size: 14px; }
+        .promo-box h4 { font-size: 20px; }
+        .promo-text-title { font-size: 16px; }
+        .promo-text-desc { font-size: 14px; }
+        .promo-icon { width: 40px; height: 40px; font-size: 18px; }
         .model-desc-box { font-size: 15px; }
         #check-result { font-size: 17px; }
         .memo-box { font-size: 14px; }
@@ -217,8 +228,8 @@
       </div>
 
       <div class="footer-section" style="text-align: center; margin-top: 75px; padding: 20px; border-top: 1px solid #eee;">
-        <div style="font-size: 26px; font-weight: bold; color: #2e7d32; margin-bottom: 8px;">"판매는 문 앞에서, 구매는 믿을수 있는 릴만!"</div>
-        <div style="font-size: 22px; color: #555; margin-bottom: 12px;">판매자엔 편리함을, 구매자엔 신뢰를, 릴케어팜</div>
+        <!-- <div style="font-size: 26px; font-weight: bold; color: #2e7d32; margin-bottom: 8px;">"판매는 문 앞에서, 구매는 믿을수 있는 릴만!"</div>
+        <div style="font-size: 22px; color: #555; margin-bottom: 12px;">판매자엔 편리함을, 구매자엔 신뢰를, 릴케어팜</div> -->
         <div style="font-size: 18px; color: #aaa;">© 릴케어팜 All rights reserved.</div>
       </div>
     </div>
@@ -231,20 +242,42 @@
       
       <div id="result-table-area"></div>
 
-      <button onclick="openApplyPage()" style="margin-top: 30px;">위탁 신청하기</button>
-      <button class="btn-sub" onclick="showPage('view-home')">첫 화면으로</button>
-
-      <img src="https://i.ibb.co/hR0tyLgz/image.png" class="result-img" alt="결과안내" loading="lazy">
-
       <div class="promo-box">
         <h4>💡 복잡한 중고거래, 릴케어팜에 맡겨야 하는 이유!</h4>
-        <ul>
-          <li><strong>방문 수거:</strong> 귀찮은 발송 없이, 기사님이 집 앞까지 직접 와서 수거해 갑니다.</li>
-          <li><strong>철저한 검수 판매:</strong> 전문가의 꼼꼼한 검수를 거쳐, 일반 중고보다 더 믿을 수 있는 최적의 컨디션으로 판매합니다.</li>
-          <li><strong>정직한 상태 공개:</strong> 숨은 하자 걱정 없이, 구매자도 믿고 안전하게 거래할 수 있습니다.</li>
-          <li><strong>스트레스 제로:</strong> 사진 촬영, 판매글 작성, 네고 문의, 진상 고객 응대까지 모두 대행합니다.</li>
-        </ul>
+        <div class="promo-grid">
+          <div class="promo-item">
+            <div class="promo-icon">🚚</div>
+            <div>
+              <div class="promo-text-title">방문 수거</div>
+              <div class="promo-text-desc">귀찮은 발송 없이, 기사님이 집 앞까지 직접 와서 수거해 갑니다.</div>
+            </div>
+          </div>
+          <div class="promo-item">
+            <div class="promo-icon">🔍</div>
+            <div>
+              <div class="promo-text-title">철저한 검수 판매</div>
+              <div class="promo-text-desc">전문가의 꼼꼼한 검수를 거쳐, 일반 중고보다 더 믿을 수 있는 최적의 컨디션으로 판매합니다.</div>
+            </div>
+          </div>
+          <div class="promo-item">
+            <div class="promo-icon">🛡️</div>
+            <div>
+              <div class="promo-text-title">정직한 상태 공개</div>
+              <div class="promo-text-desc">숨은 하자 걱정 없이, 구매자도 믿고 안전하게 거래할 수 있습니다.</div>
+            </div>
+          </div>
+          <div class="promo-item">
+            <div class="promo-icon">😌</div>
+            <div>
+              <div class="promo-text-title">스트레스 제로</div>
+              <div class="promo-text-desc">사진 촬영, 판매글 작성, 네고 문의, 진상 고객 응대까지 모두 대행합니다.</div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <button onclick="openApplyPage()" style="margin-top: 30px;">위탁 신청하기</button>
+      <button class="btn-sub" onclick="showPage('view-home')">첫 화면으로</button>
     </div>
 
     <!-- [3] 위탁 신청 및 홈택배 예약 페이지 여기주석 테스트 진짜 가나 보자.. git과 구글로.. -->
