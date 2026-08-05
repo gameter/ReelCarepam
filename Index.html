@@ -376,7 +376,7 @@
       <button class="btn-sub" onclick="showPage('view-home')">첫 화면으로</button>
     </div>
 
-<!-- [5] 신청 완료 페이지 -->
+    <!-- [5] 신청 완료 페이지 -->
     <div id="view-success" class="container page">
       <div class="text-center">
         <h2 class="success-title">🎉 홈택배 예약이 완료되었습니다!</h2>
@@ -387,6 +387,7 @@
         <div style="font-weight: bold; color: #2e7d32; border-bottom: 1px solid #c5e1a5; padding-bottom: 8px; margin-bottom: 8px;">
           📋 수거 예약 요약 정보
         </div>
+        🔖 <strong>위탁번호:</strong> <span id="summary-id" style="font-family:'Courier New',monospace; font-weight:bold;"></span><br>
         📌 <strong>위탁 상품:</strong> <span id="summary-item"></span><br>
         👤 <strong>보내시는 분:</strong> <span id="summary-name"></span><br>
         📍 <strong>수거 주소:</strong> <span id="summary-address"></span><br>
@@ -407,12 +408,20 @@
         <ul style="margin-top: 5px;">
           <li><strong>안전 포장:</strong> 이동 중 파손되지 않도록 에어캡과 튼튼한 박스로 이중 포장해 주세요.</li>
           <li><strong>문 앞 보관:</strong> 지정하신 픽업일 아침에 문 앞에 내놓아 주시면 기사님이 비대면으로 수거합니다.</li>
-          <li><strong>진행 현황 확인:</strong> 아래 '내 위탁 물품 조회하기' 버튼에서 이름·연락처·비밀번호로 언제든 실시간 진행 상태를 확인하실 수 있습니다.</li>
+          <li><strong>진행 현황 확인:</strong> 아래 '내 위탁 물품 조회하기' 버튼에서 방금 설정하신 비밀번호로 언제든 실시간 진행 상태를 확인하실 수 있습니다.</li>
         </ul>
       </div>
 
-      <button onclick="showPage('view-check')" style="margin-top: 10px;">📦 내 위탁 물품 조회하기</button>
+      <div class="notice-box" style="background-color:#fff8e1; border:1px solid #ffe082; text-align:center;">
+        📱 진행 중 궁금한 점은 <a href="http://pf.kakao.com/_GEFBX" target="_blank" style="color:#e65100; font-weight:bold; text-decoration:underline;">카카오톡 채널 문의</a>로 편하게 연락주세요.
+      </div>
+
+      <button onclick="goToCheckFromSuccess()" style="margin-top: 10px;">📦 내 위탁 물품 조회하기</button>
       <button class="btn-sub" onclick="goToHomeFromSuccess()">확인 (첫 화면으로)</button>
+
+      <div class="sub-link-box" style="margin-top:20px; color:#888;">
+        💡 다음에도 릴 판매하실 땐, 이 페이지를 즐겨찾기 해두시면 편해요!
+      </div>
     </div>
 
 
@@ -732,41 +741,45 @@
         return settlement < 0 ? 0 : settlement;
       }
 
+      function goToCheckFromSuccess() {
+        document.getElementById('check-name').value = lastCheckName;
+        document.getElementById('check-phone').value = lastCheckPhone;
+        document.getElementById('check-pw').value = lastCheckPw;
+        showPage('view-check');
+        checkStatus();
+      }
+
       function submitApply() {
         let btn = document.getElementById('applyBtnSubmit');
         btn.disabled = true; btn.innerText = "예약 접수 중...";
         let nameInput = document.getElementById('name').value.trim();
+        let phoneInput = document.getElementById('phone').value.trim();
+        let pwInput = document.getElementById('pw').value.trim();
         let itemInput = document.getElementById('item').value.trim();
         let fullAddress = document.getElementById('address').value.trim() + " " + document.getElementById('address_detail').value.trim();
         let rawDate = document.getElementById('pickup_date').value;
         let dateParts = rawDate.split('-');
 
         let applyData = {
-          n: nameInput, p: document.getElementById('phone').value.trim(), pw: document.getElementById('pw').value.trim(),
+          n: nameInput, p: phoneInput, pw: pwInput,
           item: itemInput, addr: fullAddress, pickupDate: rawDate, boxSize: "초소형", category: "낚시릴", price: 10000
         };
 
         google.script.run
           .withSuccessHandler(res => {
-            if (res === "OK") {
+            if (res && String(res).indexOf("ERROR") === -1) {
+              document.getElementById('summary-id').innerText = res;
               document.getElementById('summary-item').innerText = itemInput;
               document.getElementById('summary-name').innerText = nameInput;
               document.getElementById('summary-address').innerText = fullAddress;
               document.getElementById('summary-date').innerText = `${dateParts[0]}년 ${dateParts[1]}월 ${dateParts[2]}일`;
+              lastCheckName = nameInput; lastCheckPhone = phoneInput; lastCheckPw = pwInput;
               btn.innerText = "동의 및 위탁 신청 완료";
               showPage('view-success');
             } else { alert("신청 오류: " + res); btn.disabled = false; btn.innerText = "동의 및 위탁 신청 완료"; }
           })
           .withFailureHandler(err => { alert("통신 오류: " + err.message); btn.disabled = false; btn.innerText = "동의 및 위탁 신청 완료"; })
           .saveCustomer(applyData);
-      }
-
-      function goToHomeFromSuccess() {
-        document.getElementById('name').value = ""; document.getElementById('phone').value = "";
-        document.getElementById('address').value = ""; document.getElementById('address_detail').value = "";
-        document.getElementById('pw').value = ""; if (document.getElementById('agree-check')) document.getElementById('agree-check').checked = false;
-        document.getElementById('item').value = "";
-        showPage('view-home');
       }
 
       // 릴케어 검진 리포트 렌더링 함수 (고유번호 이탈릭 및 멋스러운 폰트 적용)

@@ -220,7 +220,7 @@ function saveCustomer(data) {
 
   //statusCell.setDataValidation(rule);
 
-  return "OK";
+  return uniqueId;
 }
 
 // [수정된 서버 코드] 검수DB 파싱 함수
