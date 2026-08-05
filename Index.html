@@ -20,8 +20,8 @@
           justify-content: center;
         }
         .container {
-          width: 1000px !important;
-          max-width: 1000px;
+          width: 900px !important;
+          max-width: 900px;
           min-height: 1000vh;
           box-shadow: 0 0 30px rgba(0,0,0,0.15) !important;
         }
@@ -132,6 +132,36 @@
         font-size: 15px;
         border-right: 1px solid rgba(255,255,255,0.4);
         box-sizing: border-box;
+      }
+
+      /* 컴퓨터에서 볼때 폰트 사이즈 줄이는 부분... */
+      @media screen and (min-width: 1024px) {
+        h2 { font-size: 28px; }
+        h3 { font-size: 20px; }
+        label { font-size: 18px; }
+        select, input, button { padding: 14px; font-size: 17px; }
+        .btn-sub { padding: 14px; }
+        .notice-box, .process-guide-box { font-size: 15px; }
+        .agree-container { font-size: 15px; }
+        .success-summary { font-size: 16px; }
+        .card-item-title { font-size: 22px; }
+        .avg-price-title { font-size: 15px; }
+        .avg-price-value { font-size: 30px !important; }
+        .avg-price-desc { font-size: 14px; }
+        .settlement-title { font-size: 15px; }
+        .settlement-value { font-size: 22px !important; }
+        .settlement-sub { font-size: 13px; }
+        .settlement-box > div:nth-child(3) { font-size: 15px !important; }
+        .promo-box h4 { font-size: 17px; }
+        .promo-box ul { font-size: 14px; }
+        .model-desc-box { font-size: 15px; }
+        #check-result { font-size: 17px; }
+        .memo-box { font-size: 14px; }
+        .timeline-title { font-size: 16px; }
+        .sub-link-box { font-size: 15px; }
+        .footer-section div:nth-child(1) { font-size: 16px !important; }
+        .footer-section div:nth-child(2) { font-size: 14px !important; }
+        .footer-section div:nth-child(3) { font-size: 12px !important; }
       }
     </style>
   </head>
