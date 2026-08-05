@@ -11,6 +11,21 @@
         width: 100% !important; min-height: 100vh; margin: 0; background: white !important;
         padding: 20px !important; box-sizing: border-box; box-shadow: none !important; text-align: left;
       }
+
+        /* 넓은 화면(태블릿/데스크탑/세로모니터)에서는 모바일 앱처럼 가운데 정렬된 프레임으로 표시 */
+      @media screen and (min-width: 640px) {
+        body {
+          padding: 0;
+          display: flex;
+          justify-content: center;
+        }
+        .container {
+          width: 1000px !important;
+          max-width: 1000px;
+          min-height: 1000vh;
+          box-shadow: 0 0 30px rgba(0,0,0,0.15) !important;
+        }
+      }
       
       .text-center { text-align: center; }
       h2 { margin-top: 5px; color: #2e7d32; font-size: 52px; }
