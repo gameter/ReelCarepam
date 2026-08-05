@@ -4,6 +4,8 @@
     <base target="_top">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>  /*카카오 주소 추가*/
+
 
     <style>
       body { font-family: sans-serif; padding: 20px; text-align: center; background-color: #f4f4f4; margin: 0; }
@@ -297,7 +299,10 @@
       <input type="tel" id="phone" placeholder="예: 01012345678" oninput="validateApplyForm()">
 
       <label for="address">수거 주소</label>
-      <input type="text" id="address" placeholder="예: 경기도 성남시 분당구 판교역로 166" oninput="validateApplyForm()">
+      <div style="display:flex; gap:10px;">
+        <input type="text" id="address" placeholder="주소 검색 버튼을 눌러주세요" readonly style="background:#eee; flex:2;">
+        <button type="button" onclick="searchAddress()" style="width:auto; flex:1; margin:8px 0; background-color:#555; white-space:nowrap;">🔍 주소 검색</button>
+      </div>
       <input type="text" id="address_detail" placeholder="상세주소 입력 (예: 101동 202호)" oninput="validateApplyForm()">
 
       <label for="pickup_date">희망 픽업일 선택</label>
@@ -315,7 +320,10 @@
         <ul>
           <li><strong>택배비 정산 차감:</strong> 위탁자가 보내시는 배송료는 지금 결제되지 않으며, 추후 제품이 판매 완료된 후 정산금에서 자동 차감됩니다.</li>
           <li><strong>판매가격 책정:</strong> 수거된 릴은 전문가의 꼼꼼한 검수와 최근 시세를 종합하여, 가장 합리적이고 빠르게 판매될 수 있는 <strong>최적의 판매 가격을 릴케어팜이 위탁자에게 제안하고 판매</strong>합니다.</li>
-          <li><strong>위탁 수수료 및 정산:</strong> 최종 판매가격의 17%가 수수료로 청구되며 (12만 원 이하 제품은 최저 수수료 2만 원 적용), <u>최종 판매가격 - 수수료 - 배송료 = 정산금액</u>으로 계산되어 위탁자에게 입금됩니다.</li>
+          
+          <li><strong>위탁 수수료 및 정산:</strong> 위탁자 판매 희망가(릴케어 인증 판매 선택 시, 인증료 2만 원을 제외한 금액) 기준 17%가 수수료로 청구되며 (12만 원 이하 제품은 최저 수수료 2만 원 적용), <u>판매 희망가 - 수수료 - 배송료 = 정산금액</u>으로 계산되어 위탁자에게 입금됩니다.</li>
+          <li><strong>추가 비용 발생 시:</strong> 검수 결과 판매를 위해 정비 또는 부품 교체가 필요한 경우, 사전 협의 후 진행되며 해당 비용은 정산금액에서 추가로 차감될 수 있습니다.</li>
+
           <li><strong>위탁 취소 시 배송비 청구:</strong> 위탁자가 단순 변심 등으로 도중에 위탁을 취소하여 반송을 요청할 경우, 릴케어팜이 선지출한 <u>보내신 배송비</u>만 입금해 주시면 반송 처리가 가능합니다.</li>
         </ul>
       </div>
@@ -325,6 +333,7 @@
         <label for="agree-check" style="margin:0; cursor:pointer;">위 고지 내용을 확인하였으며 동의합니다.</label>
       </div>
 
+      <div id="apply-hint" style="font-size:16px; color:#d32f2f; text-align:center; min-height:30px; margin-top:5px;"></div>
       <button id="applyBtnSubmit" onclick="submitApply()" disabled>동의 및 위탁 신청 완료</button>
       <button class="btn-sub" id="applyBackBtn" onclick="clearApplyForm();">이전 화면으로</button>
     </div>
@@ -377,6 +386,14 @@
       </div>
 
       <button onclick="goToHomeFromSuccess()" style="margin-top: 10px;">확인 (첫 화면으로)</button>
+    </div>
+
+    <!-- 주소 검색 팝업 레이어 -->
+    <div id="postcode-modal-bg" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999;">
+      <div style="position:relative; width:100%; max-width:500px; height:100%; max-height:600px; margin:auto; top:50%; transform:translateY(-50%); background:#fff; border-radius:10px; overflow:hidden;">
+        <button onclick="closeAddressModal()" style="position:absolute; top:8px; right:8px; width:auto; padding:8px 14px; font-size:20px; background:#555; z-index:10000; margin:0;">✕ 닫기</button>
+        <div id="postcode-layer" style="width:100%; height:100%;"></div>
+      </div>
     </div>
 
     <script>
@@ -451,6 +468,28 @@
         }
       }
 
+      function searchAddress() {
+        document.getElementById('postcode-layer').innerHTML = "";
+        document.getElementById('postcode-modal-bg').style.display = 'block';
+
+        new daum.Postcode({
+          oncomplete: function(data) {
+            let fullAddr = data.roadAddress || data.jibunAddress;
+            document.getElementById('address').value = fullAddr;
+            validateApplyForm();
+            closeAddressModal();
+            document.getElementById('address_detail').focus();
+          },
+          width: '100%',
+          height: '100%'
+        }).embed(document.getElementById('postcode-layer'));
+      }
+
+      function closeAddressModal() {
+        document.getElementById('postcode-modal-bg').style.display = 'none';
+      }
+
+
       function validateSearchForm() { 
         const manuVal = document.getElementById('manu').value;
         const modelVal = document.getElementById('model').value;
@@ -459,19 +498,32 @@
       }
 
       function validateApplyForm() { 
-        const isAgreed = document.getElementById('agree-check') ? document.getElementById('agree-check').checked : true;
-        const nameVal = document.getElementById('name').value.trim();
-        const phoneVal = document.getElementById('phone').value.trim();
-        const addressVal = document.getElementById('address').value.trim();
-        const addressDetailVal = document.getElementById('address_detail').value.trim();
-        const pickupDateVal = document.getElementById('pickup_date').value;
-        const pwVal = document.getElementById('pw').value;
-        const itemVal = document.getElementById('item').value.trim();
-        const isPhoneValid = /^010\d{7,8}$/.test(phoneVal);
+      const isAgreed = document.getElementById('agree-check') ? document.getElementById('agree-check').checked : true;
+      const nameVal = document.getElementById('name').value.trim();
+      const phoneVal = document.getElementById('phone').value.trim();
+      const addressVal = document.getElementById('address').value.trim();
+      const addressDetailVal = document.getElementById('address_detail').value.trim();
+      const pickupDateVal = document.getElementById('pickup_date').value;
+      const pwVal = document.getElementById('pw').value;
+      const itemVal = document.getElementById('item').value.trim();
+      const isPhoneValid = /^010\d{7,8}$/.test(phoneVal);
 
-        document.getElementById('applyBtnSubmit').disabled = !(
-          itemVal && isAgreed && nameVal && isPhoneValid && addressVal && addressDetailVal && pickupDateVal && pwVal.length === 4
-        ); 
+      let missing = [];
+      if (!itemVal) missing.push("위탁 상품");
+      if (!nameVal) missing.push("이름");
+      if (!isPhoneValid) missing.push("연락처");
+      if (!addressVal) missing.push("주소");
+      if (!addressDetailVal) missing.push("상세주소");
+      if (!pickupDateVal) missing.push("픽업일");
+      if (pwVal.length !== 4) missing.push("비밀번호(4자리)");
+      if (!isAgreed) missing.push("약관 동의");
+
+      const hintEl = document.getElementById('apply-hint');
+      if (hintEl) {
+        hintEl.innerText = missing.length > 0 ? "⚠️ 입력 필요: " + missing.join(", ") : "";
+      }
+
+      document.getElementById('applyBtnSubmit').disabled = missing.length > 0; 
       }
 
       function search() {
