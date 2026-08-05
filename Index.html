@@ -166,6 +166,8 @@
         .settlement-title { font-size: 15px; }
         .settlement-value { font-size: 22px !important; }
         .settlement-sub { font-size: 13px; }
+        .success-title { color: #2e7d32; font-size: 45px; margin:0; }
+        .success-subtitle { color: #666; font-size: 40px; margin-top:5px; }
         .settlement-box > div:nth-child(3) { font-size: 15px !important; }
         .promo-box h4 { font-size: 20px; }
         .promo-text-title { font-size: 16px; }
@@ -179,6 +181,8 @@
         .footer-section div:nth-child(1) { font-size: 16px !important; }
         .footer-section div:nth-child(2) { font-size: 14px !important; }
         .footer-section div:nth-child(3) { font-size: 12px !important; }
+        .success-title { font-size: 26px; }
+        .success-subtitle { font-size: 15px; }
       }
 
       .compare-table { width:100%; border-collapse:collapse; margin-top:10px; }
@@ -306,7 +310,7 @@
       <input type="text" id="item" style="font-weight: bold; color: #555;">
 
       <label for="name">보내는 분 (실명)</label>
-      <input type="text" id="name" placeholder="실명을 입력해 주세요" oninput="validateApplyForm()">
+      <input type="text" id="name" placeholder="실명을 입력해 주세요. 입금 과정에 이 정보를 사용합니다." oninput="validateApplyForm()">
 
       <label for="phone">연락처 (010 포함 10~11숫자)</label>
       <input type="tel" id="phone" placeholder="예: 01012345678" oninput="validateApplyForm()">
@@ -372,11 +376,11 @@
       <button class="btn-sub" onclick="showPage('view-home')">첫 화면으로</button>
     </div>
 
-    <!-- [5] 신청 완료 페이지 -->
+<!-- [5] 신청 완료 페이지 -->
     <div id="view-success" class="container page">
       <div class="text-center">
-        <h2 style="color: #2e7d32; font-size: 45px;">🎉 홈택배 예약이 완료되었습니다!</h2>
-        <p style="color: #666; font-size: 40px; margin-top:5px;">안전하게 수거하여 정성껏 판매해 드리겠습니다.</p>
+        <h2 class="success-title">🎉 홈택배 예약이 완료되었습니다!</h2>
+        <p class="success-subtitle">안전하게 수거하여 정성껏 판매해 드리겠습니다.</p>
       </div>
 
       <div class="success-summary">
@@ -389,17 +393,28 @@
         📅 <strong>희망 픽업일:</strong> <span id="summary-date" style="color:#d32f2f; font-weight:bold;"></span>
       </div>
 
+      <div class="process-guide-box">
+        <div style="font-weight:bold; color:#2e7d32; margin-bottom:10px;">📦 앞으로 진행 순서</div>
+        <div>1️⃣ <strong>픽업/입고대기</strong> — 기사님이 방문 수거 후 릴케어팜으로 배송됩니다.</div>
+        <div>2️⃣ <strong>입고/검수대기</strong> — 상품 도착 후 전문가가 꼼꼼히 검수합니다.</div>
+        <div>3️⃣ <strong>전략협의</strong> — 검수 결과를 바탕으로 매도가·판매 방식을 제안드리며, 직접 선택하실 수 있습니다.</div>
+        <div>4️⃣ <strong>판매중</strong> — 선택하신 조건으로 판매를 진행합니다.</div>
+        <div>5️⃣ <strong>거래완료 · 정산</strong> — 판매 완료 후 계좌 정보 입력하시면 정산금이 입금됩니다.</div>
+      </div>
+
       <div class="notice-box" style="background-color: #fffde7; border: 1px solid #fff59d; color: #5d4037;">
         <strong style="color: #e65100;">💡 필수 안내 사항</strong>
         <ul style="margin-top: 5px;">
           <li><strong>안전 포장:</strong> 이동 중 파손되지 않도록 에어캡과 튼튼한 박스로 이중 포장해 주세요.</li>
           <li><strong>문 앞 보관:</strong> 지정하신 픽업일 아침에 문 앞에 내놓아 주시면 기사님이 비대면으로 수거합니다.</li>
-          <li><strong>진행 현황:</strong> 첫 시작 화면의 '내 위탁 물품 조회하기'에서 실시간 상태 확인이 가능합니다.</li>
+          <li><strong>진행 현황 확인:</strong> 아래 '내 위탁 물품 조회하기' 버튼에서 이름·연락처·비밀번호로 언제든 실시간 진행 상태를 확인하실 수 있습니다.</li>
         </ul>
       </div>
 
-      <button onclick="goToHomeFromSuccess()" style="margin-top: 10px;">확인 (첫 화면으로)</button>
+      <button onclick="showPage('view-check')" style="margin-top: 10px;">📦 내 위탁 물품 조회하기</button>
+      <button class="btn-sub" onclick="goToHomeFromSuccess()">확인 (첫 화면으로)</button>
     </div>
+
 
 <!-- [6] 주소 검색 페이지 (모바일 전용) -->
     <div id="view-address" class="container page">
@@ -427,6 +442,20 @@
         setReelType('Bait', true); 
         let itemEl = document.getElementById('item');
         if (itemEl) itemEl.addEventListener('input', validateApplyForm);
+
+        // URL 파라미터로 특정 페이지 바로 열기 (예: ?page=check, ?page=apply)
+        // 위탁 진행상황 조회  → https://script.google.com/macros/s/AKfycb.../exec?page=check
+        // 바로 위탁 신청하기  → https://script.google.com/macros/s/AKfycb.../exec?page=apply
+        if (google.script && google.script.url) {
+          google.script.url.getLocation(function(location) {
+            let page = location.parameter && location.parameter.page;
+            if (page === 'check') {
+              showPage('view-check');
+            } else if (page === 'apply') {
+              openDirectApplyPage();
+            }
+          });
+        }
       };
 
       function setReelType(type, force) {
@@ -736,6 +765,7 @@
         document.getElementById('name').value = ""; document.getElementById('phone').value = "";
         document.getElementById('address').value = ""; document.getElementById('address_detail').value = "";
         document.getElementById('pw').value = ""; if (document.getElementById('agree-check')) document.getElementById('agree-check').checked = false;
+        document.getElementById('item').value = "";
         showPage('view-home');
       }
 
@@ -1379,6 +1409,7 @@
         document.getElementById('name').value = ""; document.getElementById('phone').value = "";
         document.getElementById('address').value = ""; document.getElementById('address_detail').value = "";
         document.getElementById('pw').value = ""; if (document.getElementById('agree-check')) document.getElementById('agree-check').checked = false;
+        document.getElementById('item').value = "";
       }
 
       function resetSearchForm() {
