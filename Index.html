@@ -28,6 +28,8 @@
           min-height: 1000vh;
           box-shadow: 0 0 30px rgba(0,0,0,0.15) !important;
         }
+        .compare-table th, .compare-table td { font-size: 14px; padding: 10px 6px; }
+        .urgency-check-box label { font-size: 15px !important; }
       }
       
       .text-center { text-align: center; }
@@ -178,7 +180,13 @@
         .footer-section div:nth-child(3) { font-size: 12px !important; }
       }
 
+      .compare-table { width:100%; border-collapse:collapse; margin-top:10px; }
+      .compare-table th, .compare-table td { padding:14px 8px; text-align:center; font-size:22px; border-bottom:1px solid #eee; }
+      .compare-table th { background:#f1f8e9; color:#1b5e20; }
+      .compare-table td.x { color:#c62828; }
+      .compare-table td.o { color:#2e7d32; font-weight:bold; }
 
+      .urgency-check-box { background:#fff8e1; border:2px solid #ffca28; border-radius:10px; padding:16px 18px; margin:20px 0; }
       
     </style>
   </head>
@@ -282,7 +290,7 @@
         </div>
       </div>
 
-      <button onclick="openApplyPage()" style="margin-top: 30px;">위탁 신청하기</button>
+      
       <button class="btn-sub" onclick="showPage('view-home')">첫 화면으로</button>
     </div>
 
@@ -601,34 +609,53 @@
 
             let tableHtml = `
               <div class="text-center" style="margin-bottom: 10px;">
-                <h2 style="margin:0;">예상 시세 조회 결과</h2>
+                <h2 style="margin:0;">🎉 예상 정산 금액</h2>
               </div>
 
               <div class="avg-price-card">
                 <div class="card-item-title">[ ${curManu} ] ${curModel}${displayYearTitle}${displayConceptTitle}</div>
-                
-                <div class="avg-price-title">📊 최근 거래 매물 최소~최고 가격</div>
-                <div class="avg-price-value" style="font-size: 46px;">${priceText}</div>
-                
-                <div class="avg-price-desc">
-                  최근 30일간 실거래된 매물들의 데이터를 기반으로<br>산정된 <strong>최소가 ~ 최고가</strong> 범위입니다.
-                </div>
 
-                <div class="settlement-box">
+                <div class="settlement-box" style="margin-top:0; border-color:#81c784; background:#f1f8e9;">
                   <div class="settlement-title">💰 위탁 시 예상 정산 금액</div>
-                  <div class="settlement-value" style="font-size: 36px;">${settlementText}</div>
-                  
-                  <div style="margin-top: 10px; font-size: 23px; font-weight: bold; color: #d32f2f; background: #ffebee; padding: 10px; border-radius: 6px;">
+                  <div class="settlement-value" style="font-size: 50px; color:#1b5e20;">${settlementText}</div>
+                  <div style="margin-top: 10px; font-size: 22px; font-weight: bold; color: #d32f2f; background: #ffebee; padding: 10px; border-radius: 6px;">
                     📦 포장해서 문 앞에 두기만 하세요!
                   </div>
-
-                    <div style="margin-top: 10px; font-size: 18px; color: #777; text-align: center; line-height: 1.6;">
-                    <span style="color:#aaa;">직접 판매 시</span> 사진·판매글·네고 응대까지 평균 2~3주 소요 &nbsp;→&nbsp; <span style="color:#2e7d32;">위탁 시 문 앞에 두기만 하면 끝</span>
+                  <div class="settlement-sub" style="margin-top:12px; line-height:1.6;">
+                    릴케어팜의 검수·오버홀·사진촬영·판매등록·문의응대·택배비까지<br>모든 비용이 포함된 최종 예상 정산 금액입니다.
                   </div>
+                </div>
 
-                  <div class="settlement-sub">수수료 및 홈택배비 차감 후 통장에 입금되는 최종 금액 범위입니다.</div>
+                <div style="margin-top:25px; padding-top:20px; border-top:1px dashed #c5e1a5;">
+                  <div class="avg-price-title">📊 최근 거래 매물 최소~최고 가격</div>
+                  <div class="avg-price-value" style="font-size: 34px;">${priceText}</div>
+                  <div class="avg-price-desc" style="font-size:16px;">
+                    ✔ 중고나라 ✔ 번개장터 ✔ 당근마켓 ✔ 릴케어팜 거래데이터 기준<br>최근 30일 실거래 데이터를 기반으로 산출되었습니다.
+                  </div>
                 </div>
               </div>
+
+              <div class="promo-box">
+                <h4>🤔 직접 판매하면 무엇이 다를까요?</h4>
+                <table class="compare-table">
+                  <tr><th></th><th>직접 판매</th><th>릴케어팜</th></tr>
+                  <tr><td>사진 촬영</td><td class="x">20장 촬영</td><td class="o">없음</td></tr>
+                  <tr><td>판매글 작성</td><td class="x">직접 작성</td><td class="o">없음</td></tr>
+                  <tr><td>가격 흥정</td><td class="x">직접 응대</td><td class="o">없음</td></tr>
+                  <tr><td>택배 포장/발송</td><td class="x">직접 발송</td><td class="o">문 앞에 두기만</td></tr>
+                  <tr><td>사기 위험</td><td class="x">있음</td><td class="o">없음</td></tr>
+                  <tr><td>판매 기간</td><td class="x">평균 2~4주</td><td class="o">맡기면 끝</td></tr>
+                </table>
+              </div>
+
+              <div class="urgency-check-box">
+                <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; font-size:24px; font-weight:normal;">
+                  <input type="checkbox" id="urgency-check" onchange="toggleUrgencyCTA()" style="width:26px; height:26px; margin-top:4px;">
+                  <span>현재 시세가 떨어지기 전에 판매를 진행하고 싶어요.</span>
+                </label>
+              </div>
+
+              <button id="ctaBtn" onclick="openApplyPage()" style="margin-top: 15px;">위탁 신청하기</button>
             `;
             document.getElementById('result-table-area').innerHTML = tableHtml;
             showPage('view-price'); 
@@ -637,6 +664,19 @@
           }
         }).getPriceRange(type, curManu, curModel, curYear);
       }
+
+      function toggleUrgencyCTA() {
+        let checked = document.getElementById('urgency-check').checked;
+        let btn = document.getElementById('ctaBtn');
+        if (checked) {
+          btn.innerText = "🚚 무료 방문수거 신청하기";
+          btn.style.backgroundColor = "#d32f2f";
+        } else {
+          btn.innerText = "위탁 신청하기";
+          btn.style.backgroundColor = "#2e7d32";
+        }
+      }
+
 
       // 가격 -> 예상 정산금액 계산 (수수료 17%, 최저 2만원, 홈택배비 4천원 차감)
       function calcSettlement(price) {
