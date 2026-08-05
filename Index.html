@@ -487,8 +487,7 @@
       let isDesktopAddressSearch = false;
 
       function searchAddress() {
-        isDesktopAddressSearch = window.matchMedia('(min-width: 640px)').matches;
-        alert("innerWidth: " + window.innerWidth + " / 데스크탑판정: " + isDesktopAddressSearch);
+        isDesktopAddressSearch = !/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
         if (isDesktopAddressSearch) {
           document.getElementById('postcode-layer-modal').innerHTML = "";
