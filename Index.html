@@ -94,7 +94,8 @@
       .avg-price-card {
         background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e9 100%); border: 2px solid #a5d6a7; border-radius: 16px; padding: 35px 20px; margin: 20px 0 30px 0; text-align: center; box-shadow: 0 4px 15px rgba(46, 125, 50, 0.08);
       }
-      .card-item-title { font-size: 38px; color: #1b5e20; font-weight: bold; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px dashed #c5e1a5; }
+      /*.card-item-title { font-size: 38px; color: #1b5e20; font-weight: bold; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px dashed #c5e1a5; }*/
+      .card-item-title { font-size: 38px; color: #1b5e20; font-weight: bold; margin-bottom: 15px; }
       .avg-price-title { font-size: 26px; color: #2e7d32; font-weight: bold; margin-bottom: 10px; }
       .avg-price-value { font-size: 60px; font-weight: bold; color: #d32f2f; margin: 5px 0; }
       .avg-price-desc { font-size: 24px; color: #666; margin-top: 10px; line-height: 1.4; }
@@ -607,13 +608,23 @@
               ? `${minSettlement.toLocaleString()}원 ~ ${maxSettlement.toLocaleString()}원`
               : "-";
 
-            let tableHtml = `
+              let salesPointHtml = res.salesPoint ? `
+                <div style="background:#fff; border:1px solid #e0e0e0; border-radius:8px; padding:14px 16px; margin-top:12px; font-size:16px; color:#444; line-height:1.6; text-align:left;">
+                  💬 ${res.salesPoint}
+                </div>` : "";
+            
+            
+              let tableHtml = `
               <div class="text-center" style="margin-bottom: 10px;">
                 <h2 style="margin:0;">🎉 예상 정산 금액</h2>
               </div>
 
-              <div class="avg-price-card">
+              
+                <div class="avg-price-card">
                 <div class="card-item-title">[ ${curManu} ] ${curModel}${displayYearTitle}${displayConceptTitle}</div>
+                ${salesPointHtml}
+
+                <div style="margin-top:25px; padding-top:20px; border-top:1px dashed #c5e1a5;">
 
                 <div>
                   <div class="avg-price-title">📊 최근 거래 매물 최소~최고 가격</div>
@@ -622,6 +633,8 @@
                     최근 30일 실거래 데이터를 기반으로 산출되었습니다.
                   </div>
                 </div>
+
+                
 
                 <div class="settlement-box" style="margin-top:25px; padding-top:20px; border-top:1px dashed #c5e1a5; border-color:#81c784; background:#f1f8e9;">
                   <div class="settlement-title">💰 위탁 시 예상 정산 금액</div>

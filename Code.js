@@ -103,12 +103,12 @@ function getModelsAndDetails(type, manu) {
   return { list: modelList, map: modelMap };
 }
 
-// 검색 시 최소가 ~ 최대가 반환 함수
+// 검색 시 최소가 ~ 최대가 + 판매포인트 반환 함수
 function getPriceRange(type, manu, model, year) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(getSheetName(type));
   if (!sheet) return null;
   
-  var data = sheet.getRange("A2:H" + sheet.getLastRow()).getValues();
+  var data = sheet.getRange("A2:I" + sheet.getLastRow()).getValues();
 
   for (var i = 0; i < data.length; i++) {
     var sheetManu = String(data[i][0]).trim();
@@ -124,8 +124,9 @@ function getPriceRange(type, manu, model, year) {
       };
       
       return {
-        min: parseVal(data[i][5]), // F열: 중고 최소가
-        max: parseVal(data[i][6])  // G열: 중고 최대가
+        min: parseVal(data[i][5]),        // F열: 중고 최소가
+        max: parseVal(data[i][6]),        // G열: 중고 최대가
+        salesPoint: String(data[i][8] || "").trim()  // I열: 판매포인트
       };
     }
   }
