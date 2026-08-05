@@ -615,7 +615,7 @@
               <div class="avg-price-card">
                 <div class="card-item-title">[ ${curManu} ] ${curModel}${displayYearTitle}${displayConceptTitle}</div>
 
-                <div style="margin-top:25px; padding-top:20px; border-top:1px dashed #c5e1a5;">
+                <div>
                   <div class="avg-price-title">📊 최근 거래 매물 최소~최고 가격</div>
                   <div class="avg-price-value" style="font-size: 34px;">${priceText}</div>
                   <div class="avg-price-desc" style="font-size:16px;">
@@ -623,15 +623,15 @@
                   </div>
                 </div>
 
-                <div class="settlement-box" style="margin-top:0; border-color:#81c784; background:#f1f8e9;">
+                <div class="settlement-box" style="margin-top:25px; padding-top:20px; border-top:1px dashed #c5e1a5; border-color:#81c784; background:#f1f8e9;">
                   <div class="settlement-title">💰 위탁 시 예상 정산 금액</div>
                   <div class="settlement-value" style="font-size: 50px; color:#1b5e20;">${settlementText}</div>
                   <div style="margin-top: 10px; font-size: 22px; font-weight: bold; color: #d32f2f; background: #ffebee; padding: 10px; border-radius: 6px;">
-                    📦 박스에 담아 문 앞에 두시면 기사님이 방문 수거합니다.
+                    📦 박스에 담아 문 앞에 두기만 하세요.
                   </div>
 
                   <div class="settlement-sub" style="margin-top:12px; line-height:1.6;">
-                    릴케어팜의 검수·사진촬영·판매등록·문의응대·배송까지<br>모든 비용이 포함된 최종 예상 정산 금액입니다.
+                    릴케어팜이 검수·사진촬영·판매등록·문의응대·배송까지<br>모든 비용 계산 후 예상되는 입금액입니다.
                   </div>
                 </div>
 
@@ -657,13 +657,8 @@
                 </label>
               </div>
 
-              <div style="text-align:center; font-size:20px; color:#555; line-height:1.8; margin:10px 0;">
-                ✓ 신청은 1분이면 끝<br>
-                ✓ 수거 일정은 '위탁 물품 조회'에서 확인 가능<br>
-                ✓ 비용은 판매 완료 후 차감됩니다
-              </div>
-
               <button id="ctaBtn" onclick="openApplyPage()" style="margin-top: 15px;">위탁 신청하기</button>
+
             `;
             document.getElementById('result-table-area').innerHTML = tableHtml;
             showPage('view-price'); 
@@ -677,7 +672,7 @@
         let checked = document.getElementById('urgency-check').checked;
         let btn = document.getElementById('ctaBtn');
         if (checked) {
-          btn.innerText = "🚚 지금 바로 방문수거 신청하기";
+          btn.innerText = "🚚 편리한 방문수거 신청하기";
           btn.style.backgroundColor = "#d32f2f";
         } else {
           btn.innerText = "위탁 신청하기";
