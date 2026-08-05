@@ -4,7 +4,8 @@
     <base target="_top">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>  /*카카오 주소 추가*/
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <!-- 카카오 주소 추가 -->
 
 
     <style>
@@ -176,6 +177,9 @@
         .footer-section div:nth-child(2) { font-size: 14px !important; }
         .footer-section div:nth-child(3) { font-size: 12px !important; }
       }
+
+
+      
     </style>
   </head>
   <body>
@@ -388,13 +392,23 @@
       <button onclick="goToHomeFromSuccess()" style="margin-top: 10px;">확인 (첫 화면으로)</button>
     </div>
 
-    <!-- 주소 검색 팝업 레이어 -->
-    <div id="postcode-modal-bg" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999;">
-      <div style="position:relative; width:100%; max-width:500px; height:100%; max-height:600px; margin:auto; top:50%; transform:translateY(-50%); background:#fff; border-radius:10px; overflow:hidden;">
+<!-- [6] 주소 검색 페이지 (모바일 전용) -->
+    <div id="view-address" class="container page">
+      <div class="text-center">
+        <h3>주소 검색</h3>
+      </div>
+      <div id="postcode-layer-page" style="width:100%; min-height:80vh;"></div>
+      <button class="btn-sub" onclick="closeAddressModal()">이전 화면으로</button>
+    </div>
+
+    <!-- 주소 검색 팝업 레이어 (PC 전용) -->
+    <div id="postcode-modal-bg" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+      <div style="position:relative; width:100%; max-width:500px; height:80%; max-height:600px; background:#fff; border-radius:10px; overflow:hidden;">
         <button onclick="closeAddressModal()" style="position:absolute; top:8px; right:8px; width:auto; padding:8px 14px; font-size:20px; background:#555; z-index:10000; margin:0;">✕ 닫기</button>
-        <div id="postcode-layer" style="width:100%; height:100%;"></div>
+        <div id="postcode-layer-modal" style="width:100%; height:100%;"></div>
       </div>
     </div>
+
 
     <script>
       let curManu = "", curModel = "", curYear = "", curConcept = "";
@@ -468,25 +482,55 @@
         }
       }
 
-      function searchAddress() {
-        document.getElementById('postcode-layer').innerHTML = "";
-        document.getElementById('postcode-modal-bg').style.display = 'block';
 
-        new daum.Postcode({
-          oncomplete: function(data) {
-            let fullAddr = data.roadAddress || data.jibunAddress;
-            document.getElementById('address').value = fullAddr;
-            validateApplyForm();
-            closeAddressModal();
-            document.getElementById('address_detail').focus();
-          },
-          width: '100%',
-          height: '100%'
-        }).embed(document.getElementById('postcode-layer'));
+      let addressReturnPage = 'view-apply';
+      let isDesktopAddressSearch = false;
+
+      function searchAddress() {
+        isDesktopAddressSearch = window.matchMedia('(min-width: 640px)').matches;
+        alert("innerWidth: " + window.innerWidth + " / 데스크탑판정: " + isDesktopAddressSearch);
+
+        if (isDesktopAddressSearch) {
+          document.getElementById('postcode-layer-modal').innerHTML = "";
+          document.getElementById('postcode-modal-bg').style.display = 'flex';
+
+          new daum.Postcode({
+            oncomplete: function(data) {
+              let fullAddr = data.roadAddress || data.jibunAddress;
+              document.getElementById('address').value = fullAddr;
+              validateApplyForm();
+              closeAddressModal();
+              document.getElementById('address_detail').focus();
+            },
+            width: '100%',
+            height: '100%'
+          }).embed(document.getElementById('postcode-layer-modal'));
+
+        } else {
+          addressReturnPage = document.getElementById('view-apply').style.display === 'block' ? 'view-apply' : addressReturnPage;
+          document.getElementById('postcode-layer-page').innerHTML = "";
+          showPage('view-address');
+
+          new daum.Postcode({
+            oncomplete: function(data) {
+              let fullAddr = data.roadAddress || data.jibunAddress;
+              document.getElementById('address').value = fullAddr;
+              validateApplyForm();
+              showPage(addressReturnPage);
+              document.getElementById('address_detail').focus();
+            },
+            width: '100%',
+            height: '100%'
+          }).embed(document.getElementById('postcode-layer-page'));
+        }
       }
 
       function closeAddressModal() {
-        document.getElementById('postcode-modal-bg').style.display = 'none';
+        if (isDesktopAddressSearch) {
+          document.getElementById('postcode-modal-bg').style.display = 'none';
+        } else {
+          showPage(addressReturnPage);
+        }
       }
 
 
