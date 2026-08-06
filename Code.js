@@ -227,7 +227,7 @@ function saveCustomer(data) {
 
   sheet.appendRow(newRow);
 
-  sendTelegramNotify("📦 새 위탁 신청 접수\n" + data.n + " / " + data.item + "\nID: " + uniqueId);
+  sendTelegramNotify("📦 새 위탁 신청 접수\n\n👤 이름/상품:" + data.n + " / " + data.item + "\n🔖 ID: " + uniqueId + "\n📞 연락처: " + rawPhone + "\n📍 주소: " + data.addr + "\n📅 희망 픽업일: " + data.pickupDate + "\n\n➡️ 홈택배 접수 사이트에서 배송 신청해주세요");
 
   var newRowIndex = sheet.getLastRow();
   var statusCell = sheet.getRange(newRowIndex, COL.STATUS);
@@ -388,7 +388,7 @@ function saveStrategyChoice(name, phone, pw, id, strategyType, chosenPrice) {
       sheet.getRange(rowNum, COL.COMMENT).setValue(getDefaultCommentForStatus(targetStatus));
 
       calculateFinancials(sheet, rowNum, finalPrice, serviceName);
-      sendTelegramNotify("🏷️ 판매 전략 확정\n" + name + " (" + id + ")\n" + serviceName + " / " + finalPrice.toLocaleString() + "원");
+      sendTelegramNotify("🏷️ 판매 전략 확정\n\n👤 이름: " + name + "\n🔖 ID: " + id + "\n📦 전략: " + serviceName + "\n💰 확정가: " + finalPrice.toLocaleString() + "원\n\n➡️ 선택된 전략 확인하고, 진행해 주세요");
       return "OK";
     }
   }
@@ -414,7 +414,8 @@ function saveAccountInfo(name, phone, pw, id, bank, account) {
       sheet.getRange(rowNum, COL.ACCOUNT).setValue(sanitizeForSheet(bank + " " + account));
       sheet.getRange(rowNum, COL.STATUS).setValue("송금대기");
       sheet.getRange(rowNum, COL.COMMENT).setValue(getDefaultCommentForStatus("송금대기"));
-      sendTelegramNotify("💳 계좌 정보 입력\n" + name + " (" + id + ")\n" + bank + " " + account);
+      var settlementAmt = Number(sheet.getRange(rowNum, COL.SETTLEMENT).getValue()) || 0;
+      sendTelegramNotify("💳 계좌 정보 입력\n\n👤 예금주: " + name + "\n🔖 ID: " + id + "\n🏦 계좌: " + bank + " " + account + "\n💰 입금액: " + settlementAmt.toLocaleString() + "원\n\n➡️ 위 금액으로 정산 입금 처리해주세요");
       return "OK";
     }
   }
@@ -540,9 +541,6 @@ function onEdit(e) {
         calculateFinancials(sheet, row, finalPrice, serviceType);
       }
       sheet.getRange(row, COL.SALE_END_DATE).setValue(formattedDate);
-      var custName = sheet.getRange(row, COL.NAME).getValue();
-      var custId = sheet.getRange(row, COL.ID).getValue();
-      sendTelegramNotify("🎉 거래완료\n" + custName + " (" + custId + ")");
     }
 
     var comment = getDefaultCommentForStatus(newStatus);
