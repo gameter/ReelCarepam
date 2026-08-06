@@ -779,6 +779,11 @@
         checkStatus();
       }
 
+      function goToHomeFromSuccess() {
+      clearApplyForm();
+      showPage('view-home');
+      }
+
       function submitApply() {
         let btn = document.getElementById('applyBtnSubmit');
         btn.disabled = true; btn.innerText = "예약 접수 중...";
