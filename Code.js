@@ -41,6 +41,30 @@ Object.keys(COL).forEach(function(key) {
   IDX[key] = COL[key] - 1;
 });
 
+//텔레그램으로 알림 보내기..
+function sendTelegramNotify(message) {
+  var props = PropertiesService.getScriptProperties();
+  var token = props.getProperty('TELEGRAM_BOT_TOKEN');
+  var chatId = props.getProperty('TELEGRAM_CHAT_ID');
+  if (!token || !chatId) return;
+
+  var url = 'https://api.telegram.org/bot' + token + '/sendMessage';
+  var payload = { chat_id: chatId, text: message };
+  var options = {
+    method: 'post',
+    contentType: 'application/json',
+    payload: JSON.stringify(payload),
+    muteHttpExceptions: true
+  };
+  try {
+    UrlFetchApp.fetch(url, options);
+  } catch (err) {
+    // 알림 실패해도 본 기능은 정상 진행되도록 무시
+  }
+}
+
+
+
 function sanitizeForSheet(val) {
   var s = (val === null || val === undefined) ? "" : String(val);
   if (/^[=+\-@]/.test(s)) { s = "'" + s; }
@@ -203,6 +227,8 @@ function saveCustomer(data) {
 
   sheet.appendRow(newRow);
 
+  sendTelegramNotify("📦 새 위탁 신청 접수\n" + data.n + " / " + data.item + "\nID: " + uniqueId);
+
   var newRowIndex = sheet.getLastRow();
   var statusCell = sheet.getRange(newRowIndex, COL.STATUS);
   var statuses = [
@@ -362,6 +388,7 @@ function saveStrategyChoice(name, phone, pw, id, strategyType, chosenPrice) {
       sheet.getRange(rowNum, COL.COMMENT).setValue(getDefaultCommentForStatus(targetStatus));
 
       calculateFinancials(sheet, rowNum, finalPrice, serviceName);
+      sendTelegramNotify("🏷️ 판매 전략 확정\n" + name + " (" + id + ")\n" + serviceName + " / " + finalPrice.toLocaleString() + "원");
       return "OK";
     }
   }
@@ -387,6 +414,7 @@ function saveAccountInfo(name, phone, pw, id, bank, account) {
       sheet.getRange(rowNum, COL.ACCOUNT).setValue(sanitizeForSheet(bank + " " + account));
       sheet.getRange(rowNum, COL.STATUS).setValue("송금대기");
       sheet.getRange(rowNum, COL.COMMENT).setValue(getDefaultCommentForStatus("송금대기"));
+      sendTelegramNotify("💳 계좌 정보 입력\n" + name + " (" + id + ")\n" + bank + " " + account);
       return "OK";
     }
   }
@@ -512,6 +540,9 @@ function onEdit(e) {
         calculateFinancials(sheet, row, finalPrice, serviceType);
       }
       sheet.getRange(row, COL.SALE_END_DATE).setValue(formattedDate);
+      var custName = sheet.getRange(row, COL.NAME).getValue();
+      var custId = sheet.getRange(row, COL.ID).getValue();
+      sendTelegramNotify("🎉 거래완료\n" + custName + " (" + custId + ")");
     }
 
     var comment = getDefaultCommentForStatus(newStatus);
