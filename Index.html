@@ -332,7 +332,7 @@
       <input type="text" id="item" style="font-weight: bold; color: #555;">
 
       <label for="name">보내는 분 (실명)</label>
-      <input type="text" id="name" placeholder="실명을 입력해 주세요. 입금 과정에 이 정보를 사용합니다." oninput="validateApplyForm()">
+      <input type="text" id="name" placeholder="실명을 입력해 주세요. 입금 과정에 본 정보를 사용합니다." oninput="validateApplyForm()">
 
       <label for="phone">연락처 (010 포함 10~11숫자)</label>
       <input type="tel" id="phone" placeholder="예: 01012345678" oninput="validateApplyForm()">
@@ -684,7 +684,7 @@
             
               let tableHtml = `
               <div class="text-center" style="margin-bottom: 10px;">
-                <h2 style="margin:0;">🎉 예상 정산 금액</h2>
+                <h2 style="margin:0;">🎉 최근 시세 조회 결과 🎉</h2>
               </div>
 
               
@@ -734,7 +734,7 @@
               <div class="urgency-check-box">
                 <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; font-size:24px; font-weight:normal;">
                   <input type="checkbox" id="urgency-check" onchange="toggleUrgencyCTA()" style="width:26px; height:26px; margin-top:4px;">
-                  <span>지금 시세일 때 판매를 진행하고 싶습니다.</span>
+                  <span> 방문수거를 신청하겠습니다.</span>
                 </label>
               </div>
 
