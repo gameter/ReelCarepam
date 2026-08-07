@@ -1328,12 +1328,10 @@
 
             let memoSystemHtml = `
               <div style="background:#f8f9fa; border:1px solid #ced4da; border-radius:8px; padding:12px; margin-top:15px; text-align:left;">
-                <div style="font-size:22px; font-weight:bold; color:#333; margin-bottom:8px;">💬 문의하기</div>
-                <div style="font-size:18px; color:#555; margin-bottom:10px;">
-                  문의 시 위탁번호 <strong style="font-family:'Courier New', Courier, monospace;">${r.id}</strong> 을(를) 함께 남겨주시면 빠르게 확인 가능합니다.
-                  <button id="copy-btn-${r.id}" onclick="copyInquiryId('${r.id}')" style="font-size:16px; padding:4px 10px; margin-left:6px; background:#e0e0e0; color:#333; width:auto; border:1px solid #bbb; border-radius:4px;">복사</button>
-                </div>
-                <button onclick="window.open('http://pf.kakao.com/_GEFBX', '_blank')" style="font-size:20px; padding:10px; background:#FEE500; color:#3C1E1E; font-weight:bold; width:auto; border:none; border-radius:6px;">💬 카카오톡 채널로 문의하기</button>
+                <div style="font-size:22px; font-weight:bold; color:#333; margin-bottom:5px;">💬 1:1 한 줄 메모 문의</div>
+                <input type="text" id="inquiry-${r.id}" value="${r.userInquiry}" placeholder="궁금한 점을 한 줄로 남겨주세요" style="font-size:20px; padding:10px; margin-bottom:8px;">
+                ${r.sellerAnswer ? `<div style="font-size:20px; color:#1976d2; margin-bottom:8px; background:#e3f2fd; padding:10px; border-radius:6px;"><strong>릴케어팜 답변:</strong> ${r.sellerAnswer}</div>` : ""}
+                <button onclick="sendInquiry('${r.id}')" style="font-size:20px; padding:8px; background:#555; width:auto;">문의 등록/수정</button>
               </div>`;
 
             htmlStr += `
@@ -1388,31 +1386,12 @@
         }).saveAccountInfo(lastCheckName, lastCheckPhone, lastCheckPw, id, bank, account);
       }
 
-      function copyInquiryId(id) {
-        let btn = document.getElementById('copy-btn-' + id);
-        let originalText = btn ? btn.innerText : '';
-        let onCopied = () => {
-          if (!btn) return;
-          btn.innerText = '복사됨 ✅';
-          setTimeout(() => { btn.innerText = originalText; }, 1500);
-        };
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(id).then(onCopied).catch(() => fallbackCopyText(id, onCopied));
-        } else {
-          fallbackCopyText(id, onCopied);
-        }
-      }
-
-      function fallbackCopyText(text, callback) {
-        let temp = document.createElement('textarea');
-        temp.value = text;
-        temp.style.position = 'fixed';
-        temp.style.opacity = '0';
-        document.body.appendChild(temp);
-        temp.focus();
-        temp.select();
-        try { document.execCommand('copy'); callback(); } catch (e) {}
-        document.body.removeChild(temp);
+      function sendInquiry(id) {
+        let text = document.getElementById('inquiry-' + id).value.trim();
+        google.script.run.withSuccessHandler(res => {
+          if(res === "OK") { alert("문의가 등록되었습니다."); checkStatus(); }
+          else { alert("오류가 발생했습니다."); }
+        }).saveUserInquiry(lastCheckName, lastCheckPhone, lastCheckPw, id, text);
       }
 
       function updateModels() {
